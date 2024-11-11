@@ -99,4 +99,19 @@ describe('showBookDtls', () => {
         expect(res.status).toHaveBeenCalledWith(500);
         expect(res.send).toHaveBeenCalledWith('Error fetching book 12345');
     });
+    it('should return 404 if id is not a string', async () => {
+        // Arrange: Passing a non-string id (e.g., a number or an object)
+        const invalidId = 12345;  // This can also be an object, or any non-string type
+        
+        // Mocking the Book and BookInstance model methods to not be called
+        Book.findOne = jest.fn();
+        BookInstance.find = jest.fn();
+        
+        // Act
+        await showBookDtls(res as Response, invalidId as any); 
+        
+        // Assert
+        expect(res.status).toHaveBeenCalledWith(404);  
+        expect(res.send).toHaveBeenCalledWith('Book ' + invalidId + ' not found');
+    });
 });
